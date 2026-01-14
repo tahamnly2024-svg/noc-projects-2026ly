@@ -1,8 +1,7 @@
-import React, { useState, useMemo, useRef, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 
-import { getRegion } from './data';
+import { rawProjects, getRegion } from './data';
 import { FilterState, Project } from './types';
-import { addProject, getProjects, deleteProject } from './src/services/projects';
 
 import SectorHighlights from './components/SectorHighlights';
 import RegionalStats from './components/RegionalStats';
@@ -10,11 +9,9 @@ import ChartsSection from './components/ChartsSection';
 import FilterSection from './components/FilterSection';
 import ProjectsTable from './components/ProjectsTable';
 
-declare const PptxGenJS: any;
-
 const App: React.FC = () => {
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [editingProject, setEditingProject] = useState<Project | null>(null);
+
+  const [projects, setProjects] = useState<Project[]>(rawProjects);
 
   const [filters, setFilters] = useState<FilterState>({
     region: '',
@@ -24,14 +21,6 @@ const App: React.FC = () => {
     searchName: '',
     valueFilter: ''
   });
-
-  useEffect(() => {
-    const load = async () => {
-      const data = await getProjects();
-      setProjects(data);
-    };
-    load();
-  }, []);
 
   const filteredProjects = useMemo(() => {
     return projects.filter(p => {
@@ -49,31 +38,42 @@ const App: React.FC = () => {
     });
   }, [filters, projects]);
 
-  const handleEditProject = (project: Project) => {
-    setEditingProject(project);
+  const handleDeleteProject = (id: number) => {
+    setProjects(prev => prev.filter(p => p.id !== id));
   };
 
-  const handleDeleteProject = async (id: string) => {
-    if (confirm('هل أنت متأكد من حذف هذا المشروع؟')) {
-      await deleteProject(id);
-      const updated = await getProjects();
-      setProjects(updated);
-    }
+  const handleSaveProject = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+
+    const newProj: Project = {
+      id: Date.now(),
+      name: formData.get('name') as string,
+      value: formData.get('value') ? Number(formData.get('value')) : null,
+      municipality: formData.get('municipality') as string,
+      region: getRegion(formData.get('municipality') as string, ''),
+      sector: formData.get('sector') as string,
+      beneficiary: formData.get('beneficiary') as string,
+      notes: formData.get('notes') as string,
+    };
+
+    setProjects(prev => [newProj, ...prev]);
   };
 
   return (
     <div className="min-h-screen bg-slate-50">
-      <FilterSection
-        filters={filters}
-        setFilters={setFilters}
-        projects={projects}
-      />
+      <FilterSection filters={filters} setFilters={setFilters} projects={projects} />
 
-      <div className="p-6">
+      <div className="p-6 space-y-16">
+
+        <RegionalStats projects={filteredProjects} />
+        <SectorHighlights projects={filteredProjects} />
+        <ChartsSection projects={filteredProjects} />
+
         <ProjectsTable
           projects={filteredProjects}
-          onEdit={handleEditProject}
           onDelete={handleDeleteProject}
+          onEdit={() => {}}
         />
       </div>
     </div>
