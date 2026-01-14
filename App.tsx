@@ -1,8 +1,8 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 
-import ReportLayout from './components/ReportLayout';
-import OverviewSection from './components/OverviewSection';
-import StatsGrid from './components/StatsGrid';
+import { getRegion } from './data';
+import { FilterState, Project } from './types';
+import { addProject, getProjects, deleteProject } from './services/projects';
 import SectorHighlights from './components/SectorHighlights';
 import RegionalStats from './components/RegionalStats';
 import ChartsSection from './components/ChartsSection';
