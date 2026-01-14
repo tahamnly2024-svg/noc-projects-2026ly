@@ -3,6 +3,7 @@ import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { getRegion } from './data';
 import { FilterState, Project } from './types';
 import { addProject, getProjects, deleteProject } from './services/projects';
+
 import SectorHighlights from './components/SectorHighlights';
 import RegionalStats from './components/RegionalStats';
 import ChartsSection from './components/ChartsSection';
@@ -10,19 +11,21 @@ import FilterSection from './components/FilterSection';
 import ProjectsTable from './components/ProjectsTable';
 import { DownloadIcon, FileIcon, PresentationIcon } from './components/Icons';
 
-import { getRegion } from './src/data';
-import { FilterState, Project } from './src/types';
-import { addProject, getProjects, deleteProject } from './src/services/projects';
-
 declare const PptxGenJS: any;
 
 const App: React.FC = () => {
+
   const [projects, setProjects] = useState<Project[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | null>(null);
 
   const [filters, setFilters] = useState<FilterState>({
-    region: '', sector: '', municipality: '', searchNotes: '', searchName: '', valueFilter: ''
+    region: '',
+    sector: '',
+    municipality: '',
+    searchNotes: '',
+    searchName: '',
+    valueFilter: ''
   });
 
   useEffect(() => {
@@ -99,13 +102,17 @@ const App: React.FC = () => {
   };
 
   return (
-    <ReportLayout sidebar={<FilterSection filters={filters} setFilters={setFilters} projects={projects} />}>
-      <ProjectsTable 
-        projects={filteredProjects}
-        onEdit={handleEditProject}
-        onDelete={handleDeleteProject}
-      />
-    </ReportLayout>
+    <div className="min-h-screen bg-slate-50">
+      <FilterSection filters={filters} setFilters={setFilters} projects={projects} />
+
+      <div className="p-6">
+        <ProjectsTable
+          projects={filteredProjects}
+          onEdit={handleEditProject}
+          onDelete={handleDeleteProject}
+        />
+      </div>
+    </div>
   );
 };
 
