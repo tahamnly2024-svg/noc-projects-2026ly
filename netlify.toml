@@ -1,0 +1,4 @@
+[build]
+  base = "noc-projects-2026ly"
+  command = "npm run build"
+  publish = "dist"
