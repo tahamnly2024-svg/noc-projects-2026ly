@@ -11,7 +11,7 @@ import ProjectsTable from './components/ProjectsTable';
 import { DownloadIcon, FileIcon, PresentationIcon } from './components/Icons';
 
 import { getRegion } from './data';
-import { addProject, getProjects, deleteProject } from './services/projects';
+import { addProject, getProjects, deleteProject } from './src/services/projects';
 import { FilterState, Project } from './types';
 
 declare const PptxGenJS: any;
