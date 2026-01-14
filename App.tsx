@@ -10,9 +10,9 @@ import FilterSection from './components/FilterSection';
 import ProjectsTable from './components/ProjectsTable';
 import { DownloadIcon, FileIcon, PresentationIcon } from './components/Icons';
 
-import { getRegion } from './data';
-import { FilterState, Project } from './types';
-import { addProject, getProjects, deleteProject } from './services/projects';
+import { getRegion } from './src/data';
+import { FilterState, Project } from './src/types';
+import { addProject, getProjects, deleteProject } from './src/services/projects';
 
 declare const PptxGenJS: any;
 
