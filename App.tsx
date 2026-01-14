@@ -2,21 +2,18 @@ import React, { useState, useMemo, useRef, useEffect } from 'react';
 
 import { getRegion } from './data';
 import { FilterState, Project } from './types';
-import { addProject, getProjects, deleteProject } from './services/projects';
+import { addProject, getProjects, deleteProject } from './src/services/projects';
 
 import SectorHighlights from './components/SectorHighlights';
 import RegionalStats from './components/RegionalStats';
 import ChartsSection from './components/ChartsSection';
 import FilterSection from './components/FilterSection';
 import ProjectsTable from './components/ProjectsTable';
-import { DownloadIcon, FileIcon, PresentationIcon } from './components/Icons';
 
 declare const PptxGenJS: any;
 
 const App: React.FC = () => {
-
   const [projects, setProjects] = useState<Project[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | null>(null);
 
   const [filters, setFilters] = useState<FilterState>({
@@ -36,17 +33,6 @@ const App: React.FC = () => {
     load();
   }, []);
 
-  const overviewRef = useRef<HTMLDivElement>(null);
-  const statsRef = useRef<HTMLDivElement>(null);
-  const regionalRef = useRef<HTMLDivElement>(null);
-  const sectorsRef = useRef<HTMLDivElement>(null);
-  const chartsRef = useRef<HTMLDivElement>(null);
-  const tableRef = useRef<HTMLDivElement>(null);
-
-  const scrollTo = (ref: React.RefObject<HTMLDivElement>) => {
-    ref.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  };
-
   const filteredProjects = useMemo(() => {
     return projects.filter(p => {
       const matchRegion = !filters.region || p.region === filters.region;
@@ -63,14 +49,8 @@ const App: React.FC = () => {
     });
   }, [filters, projects]);
 
-  const handleAddProject = () => {
-    setEditingProject(null);
-    setIsModalOpen(true);
-  };
-
   const handleEditProject = (project: Project) => {
     setEditingProject(project);
-    setIsModalOpen(true);
   };
 
   const handleDeleteProject = async (id: string) => {
@@ -81,29 +61,13 @@ const App: React.FC = () => {
     }
   };
 
-  const handleSaveProject = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-
-    const newProj = {
-      name: formData.get('name') as string,
-      value: formData.get('value') ? Number(formData.get('value')) : null,
-      municipality: formData.get('municipality') as string,
-      region: getRegion(formData.get('municipality') as string, ''),
-      sector: formData.get('sector') as string,
-      beneficiary: formData.get('beneficiary') as string,
-      notes: formData.get('notes') as string,
-    };
-
-    await addProject(newProj);
-    const updated = await getProjects();
-    setProjects(updated);
-    setIsModalOpen(false);
-  };
-
   return (
     <div className="min-h-screen bg-slate-50">
-      <FilterSection filters={filters} setFilters={setFilters} projects={projects} />
+      <FilterSection
+        filters={filters}
+        setFilters={setFilters}
+        projects={projects}
+      />
 
       <div className="p-6">
         <ProjectsTable
