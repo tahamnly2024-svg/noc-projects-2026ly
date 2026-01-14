@@ -1,0 +1,16 @@
+{
+  "name": "داش بورد التنمية المستدامة NOC",
+  "short_name": "NOC Dashboard",
+  "description": "لوحة متابعة مشاريع التنمية المستدامة للمؤسسة الوطنية للنفط 2026",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#1e3c72",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/2965/2965313.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
